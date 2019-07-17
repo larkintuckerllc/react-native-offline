@@ -1,5 +1,5 @@
-import { gql } from 'apollo-boost';
 import { DataProxy } from 'apollo-cache';
+import gql from 'graphql-tag';
 import React, { Fragment } from 'react';
 import { FetchResult, Mutation, Query } from 'react-apollo';
 import TodosCreate from './TodosCreate';
