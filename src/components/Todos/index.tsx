@@ -127,7 +127,7 @@ const Todos = () => (
           mutation={CREATE_TODO_MUTATION}
           update={handleCreateTodoUpdate}
         >
-          {(createTodo, { loading: loadingC, error: errorC }) => {
+          {createTodo => {
             return (
               <Query<AllTodosData> query={ALL_TODOS_QUERY}>
                 {({ loading: loadingA, error: errorA, data: dataA }) => {
@@ -142,11 +142,7 @@ const Todos = () => (
                   } = dataA;
                   return (
                     <Fragment>
-                      <TodosCreate
-                        createTodo={createTodo}
-                        error={errorC !== undefined}
-                        loading={loadingC}
-                      />
+                      <TodosCreate createTodo={createTodo} />
                       {errorD !== undefined && <div>Error Deleting</div>}
                       {todos.map(({ nodeId, title }) => (
                         <TodosTodo

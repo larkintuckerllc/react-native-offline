@@ -15,19 +15,10 @@ export const OnlineContext = createContext(false);
 const client = new ApolloClient({
   cache: new InMemoryCache(),
   link: ApolloLink.from([
-    onError(({ graphQLErrors, networkError }) => {
-      if (graphQLErrors) {
-        graphQLErrors.map(({ message, locations, path }) => {
-          // tslint:disable-next-line
-          console.log(
-            `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`
-          );
-          return null;
-        });
-      }
-      if (networkError) {
-        // tslint:disable-next-line
-        console.log(`[Network error]: ${networkError}`);
+    onError(({ operation }) => {
+      if (operation.operationName === 'createTodo') {
+        const { title } = operation.variables;
+        window.alert(`FAILED TO CREATE ${title}`);
       }
     }),
     new RetryLink({ attempts: { max: Infinity } }),
