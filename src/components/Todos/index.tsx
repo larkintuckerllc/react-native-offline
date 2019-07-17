@@ -60,6 +60,7 @@ export interface CreateTodoData {
 }
 
 export interface CreateTodoVariables {
+  online: boolean;
   title: string;
 }
 

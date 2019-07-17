@@ -53,6 +53,7 @@ class TodosCreate extends PureComponent<Props & Online> {
       try {
         await createTodo({
           variables: {
+            online: true,
             title,
           },
         });
@@ -68,6 +69,7 @@ class TodosCreate extends PureComponent<Props & Online> {
     } else {
       createTodo({
         variables: {
+          online: false,
           title,
         },
       }).catch(() => {

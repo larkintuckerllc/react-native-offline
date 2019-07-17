@@ -16,10 +16,14 @@ const client = new ApolloClient({
   cache: new InMemoryCache(),
   link: ApolloLink.from([
     onError(({ operation }) => {
-      if (operation.operationName === 'createTodo') {
-        const { title } = operation.variables;
-        window.alert(`FAILED TO CREATE ${title}`);
+      if (operation.operationName !== 'createTodo') {
+        return;
       }
+      const { online, title } = operation.variables;
+      if (online) {
+        return;
+      }
+      window.alert(`FAILED TO CREATE ${title}`);
     }),
     new RetryLink({ attempts: { max: Infinity } }),
     new HttpLink({
