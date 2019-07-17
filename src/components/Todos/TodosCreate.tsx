@@ -1,5 +1,6 @@
-import React, { ChangeEvent, FormEvent, PureComponent } from 'react';
+import React, { ChangeEvent, FC, FormEvent, PureComponent } from 'react';
 import { MutationFn } from 'react-apollo';
+import { OnlineContext } from '../../App';
 import { CreateTodoData, CreateTodoVariables } from './index';
 
 interface Props {
@@ -8,7 +9,11 @@ interface Props {
   loading: boolean;
 }
 
-export default class TodosCreate extends PureComponent<Props> {
+interface Online {
+  online: boolean;
+}
+
+class TodosCreate extends PureComponent<Props & Online> {
   public state = {
     dirty: false,
     title: '',
@@ -16,10 +21,11 @@ export default class TodosCreate extends PureComponent<Props> {
   };
 
   public render() {
-    const { error, loading } = this.props;
+    const { error, loading, online } = this.props;
     const { dirty, title, valid } = this.state;
     return (
       <form onSubmit={this.handleSubmit}>
+        {!online && <div>OFFLINE</div>}
         <input disabled={loading} onChange={this.handleChange} value={title} />
         <button disabled={!valid || loading} type="submit">
           Create
@@ -36,11 +42,11 @@ export default class TodosCreate extends PureComponent<Props> {
     this.setState({ dirty: true, title, valid });
   };
 
-  private handleSubmit = (e: FormEvent) => {
+  private handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     const { createTodo } = this.props;
     const { title } = this.state;
-    createTodo({
+    await createTodo({
       variables: {
         title,
       },
@@ -52,3 +58,11 @@ export default class TodosCreate extends PureComponent<Props> {
     });
   };
 }
+
+const TodosCreateWithOnline: FC<Props> = props => (
+  <OnlineContext.Consumer>
+    {online => <TodosCreate {...props} online={online} />}
+  </OnlineContext.Consumer>
+);
+
+export default TodosCreateWithOnline;
