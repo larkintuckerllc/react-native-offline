@@ -3,7 +3,8 @@ import { ApolloClient } from 'apollo-client';
 import { ApolloLink } from 'apollo-link';
 import { onError } from 'apollo-link-error';
 import { HttpLink } from 'apollo-link-http';
-import React from 'react';
+import { RetryLink } from 'apollo-link-retry';
+import React, { FC } from 'react';
 import { ApolloProvider } from 'react-apollo';
 import './App.css';
 import Todos from './components/Todos';
@@ -27,14 +28,14 @@ const client = new ApolloClient({
         console.log(`[Network error]: ${networkError}`);
       }
     }),
+    new RetryLink({ attempts: { max: Infinity } }),
     new HttpLink({
-      credentials: 'same-origin',
       uri: 'http://localhost:5000/graphql',
     }),
   ]),
 });
 
-const App: React.FC = () => {
+const App: FC = () => {
   return (
     <ApolloProvider client={client}>
       <div className="App">
